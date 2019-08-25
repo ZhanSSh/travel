@@ -1,0 +1,86 @@
+<!-- 头部 start -->
+<div class="top_banner">
+    <img src="images/header1.jpg" alt="">
+</div>
+<div class="shortcut">
+    <!-- 未登录状态  -->
+    <div class="login_out">
+        <a href="login.html">登录</a>
+        <a href="register.html">注册</a>
+    </div>
+    <!-- 登录状态  -->
+    <div class="login">
+        <span id="welcome">欢迎您！admin</span>
+        <a href="myfavorite.html" class="collection">我的收藏</a>
+        <a href="user?action=logout">退出</a>
+    </div>
+</div>
+<div class="header_wrap">
+    <div class="topbar">
+        <div class="logo">
+            <a href="/"><img src="images/logo2.jpg" alt=""></a>
+        </div>
+        <div class="search">
+            <input id="searchKey" name="" type="text" placeholder="请输入记忆名称" class="search_input" autocomplete="off">
+            <a href="javascript:;" class="search-button" id="btnRname">搜索</a>
+        </div>
+        <div class="hottel">
+            <div class="hot_pic">
+                <img src="images/hot_tel.jpg" alt="">
+            </div>
+            <div class="hot_tel">
+                <p class="hot_time">试用热线(9:00-6:00)</p>
+                <p class="hot_num">520-999-1314</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 首页导航 -->
+<div class="navitem" style="color: #2aabd2">
+    <ul class="nav">
+    </ul>
+</div>
+<script type="text/javascript">
+    $(function () {
+        showStatus();
+        loadNavItems();
+        $("#btnRname").click(function () {
+            var rname = $("#searchKey").val().trim();
+            var cid = getParameter("cid");
+           changePage(cid,1,rname);
+        });
+    });
+    //加载页面导航
+    function loadNavItems() {
+     $.get({
+         url:"category",
+         data:"action=findAllCategory",
+         success:function (categories) {
+             var html="";
+             for(var category of categories){
+                 html+="<li><a href=\"route_list.html?cid="+ category.cid+"\">"+ category.cname +"</a></li>";
+             }
+             html += "<li><a href=\"favoriterank.html\">美好记忆榜</a></li>";
+             //显示在导航条容器中，交集选择器，既叫ul，同时类名nav
+             $("ul.nav").html(html);
+         }
+     });
+    };
+    function showStatus() {
+            $.get({
+                url:"user",
+                data:"action=getLoginUserData",
+                success:function (user) {
+                    if(user == false){
+                        $(".login_out").show();
+                        $(".login").hide();
+                    }
+                    else {
+                        $("#welcome").text("欢迎您！"+user.name);
+                        $(".login_out").hide();
+                        $(".login").show();
+                    }
+                }
+            });
+        }
+</script>
